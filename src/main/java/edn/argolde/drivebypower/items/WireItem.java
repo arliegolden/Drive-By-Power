@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower.items;
+package edn.argolde.drivebypower.items;
 
 import net.minecraft.world.item.Item;
 

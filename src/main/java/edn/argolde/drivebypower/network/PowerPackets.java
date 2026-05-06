@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower.network;
+package edn.argolde.drivebypower.network;
 
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 

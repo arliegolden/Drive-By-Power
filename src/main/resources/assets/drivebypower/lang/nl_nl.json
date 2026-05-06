@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Stroomkabel",
+  "item.drivebypower.wire_cutter": "Stroomkabelknipper",
+  "subtitle.drivebypower.plug.in": "Kabel aangesloten",
+  "subtitle.drivebypower.plug.out": "Kabel losgekoppeld",
+  "drivebypower.configuration.title": "Drive By Power-configuratie",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power-configuratie",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power-configuratie",
+  "drivebypower.configuration.maxFePerTick": "Max. FE per tick"
+}

@@ -1,7 +1,7 @@
-package edn.stratodonut.drivebypower.mixin.compat;
+package edn.argolde.drivebypower.mixin.compat;
 
 import dev.ryanhcode.sable.api.block.BlockSubLevelAssemblyListener;
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;

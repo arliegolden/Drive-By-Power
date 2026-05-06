@@ -1,6 +1,6 @@
-package edn.stratodonut.drivebypower;
+package edn.argolde.drivebypower;
 
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

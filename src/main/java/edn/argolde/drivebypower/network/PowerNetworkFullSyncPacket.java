@@ -1,7 +1,7 @@
-package edn.stratodonut.drivebypower.network;
+package edn.argolde.drivebypower.network;
 
-import edn.stratodonut.drivebypower.DriveByPowerMod;
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.DriveByPowerMod;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;

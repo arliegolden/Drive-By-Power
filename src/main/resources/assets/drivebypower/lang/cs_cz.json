@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Napájecí kabel",
+  "item.drivebypower.wire_cutter": "Štípačky na napájecí kabely",
+  "subtitle.drivebypower.plug.in": "Kabel připojen",
+  "subtitle.drivebypower.plug.out": "Kabel odpojen",
+  "drivebypower.configuration.title": "Konfigurace Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Konfigurace Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Konfigurace Drive By Power",
+  "drivebypower.configuration.maxFePerTick": "Max. FE za tick"
+}

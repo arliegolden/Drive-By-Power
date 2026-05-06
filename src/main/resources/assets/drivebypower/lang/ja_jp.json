@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "電力ケーブル",
+  "item.drivebypower.wire_cutter": "電力ケーブルカッター",
+  "subtitle.drivebypower.plug.in": "ケーブルが接続される",
+  "subtitle.drivebypower.plug.out": "ケーブルが切断される",
+  "drivebypower.configuration.title": "Drive By Power 設定",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power 設定",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power 設定",
+  "drivebypower.configuration.maxFePerTick": "1ティックあたりの最大FE"
+}

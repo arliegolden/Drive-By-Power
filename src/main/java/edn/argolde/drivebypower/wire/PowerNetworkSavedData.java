@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower.wire;
+package edn.argolde.drivebypower.wire;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

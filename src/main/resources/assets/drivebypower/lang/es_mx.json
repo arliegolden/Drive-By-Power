@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Cable de energía",
+  "item.drivebypower.wire_cutter": "Cortador de cables de energía",
+  "subtitle.drivebypower.plug.in": "Cable conectado",
+  "subtitle.drivebypower.plug.out": "Cable desconectado",
+  "drivebypower.configuration.title": "Configuración de Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Configuración de Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Configuración de Drive By Power",
+  "drivebypower.configuration.maxFePerTick": "FE máximo por tick"
+}

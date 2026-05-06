@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Strömkabel",
+  "item.drivebypower.wire_cutter": "Strömkabelklippare",
+  "subtitle.drivebypower.plug.in": "Kabel ansluten",
+  "subtitle.drivebypower.plug.out": "Kabel frånkopplad",
+  "drivebypower.configuration.title": "Drive By Power-konfiguration",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power-konfiguration",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power-konfiguration",
+  "drivebypower.configuration.maxFePerTick": "Max FE per tick"
+}

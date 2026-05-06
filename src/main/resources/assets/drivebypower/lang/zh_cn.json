@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "电力线缆",
+  "item.drivebypower.wire_cutter": "电力线缆剪",
+  "subtitle.drivebypower.plug.in": "线缆已连接",
+  "subtitle.drivebypower.plug.out": "线缆已断开",
+  "drivebypower.configuration.title": "Drive By Power 配置",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power 配置",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power 配置",
+  "drivebypower.configuration.maxFePerTick": "每刻最大 FE"
+}

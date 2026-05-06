@@ -1,7 +1,8 @@
-package edn.stratodonut.drivebypower;
+package edn.argolde.drivebypower;
 
 import com.mojang.logging.LogUtils;
-import edn.stratodonut.drivebypower.network.PowerPackets;
+
+import edn.argolde.drivebypower.network.PowerPackets;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

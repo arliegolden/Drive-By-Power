@@ -1,6 +1,6 @@
-package edn.stratodonut.drivebypower.items;
+package edn.argolde.drivebypower.items;
 
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

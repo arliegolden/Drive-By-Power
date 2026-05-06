@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Güç Kablosu",
+  "item.drivebypower.wire_cutter": "Güç Kablosu Kesici",
+  "subtitle.drivebypower.plug.in": "Kablo bağlandı",
+  "subtitle.drivebypower.plug.out": "Kablo çıkarıldı",
+  "drivebypower.configuration.title": "Drive By Power Yapılandırması",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power Yapılandırması",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power Yapılandırması",
+  "drivebypower.configuration.maxFePerTick": "Tick başına maksimum FE"
+}

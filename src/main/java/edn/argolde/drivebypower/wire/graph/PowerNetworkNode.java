@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower.wire.graph;
+package edn.argolde.drivebypower.wire.graph;
 
 import java.util.HashMap;
 import java.util.Map;

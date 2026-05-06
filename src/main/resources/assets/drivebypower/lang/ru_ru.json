@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Силовой кабель",
+  "item.drivebypower.wire_cutter": "Кусачки для силового кабеля",
+  "subtitle.drivebypower.plug.in": "Кабель подключён",
+  "subtitle.drivebypower.plug.out": "Кабель отключён",
+  "drivebypower.configuration.title": "Настройки Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Настройки Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Настройки Drive By Power",
+  "drivebypower.configuration.maxFePerTick": "Макс. FE за тик"
+}

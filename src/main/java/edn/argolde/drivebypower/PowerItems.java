@@ -1,7 +1,7 @@
-package edn.stratodonut.drivebypower;
+package edn.argolde.drivebypower;
 
-import edn.stratodonut.drivebypower.items.WireCutterItem;
-import edn.stratodonut.drivebypower.items.WireItem;
+import edn.argolde.drivebypower.items.WireCutterItem;
+import edn.argolde.drivebypower.items.WireItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;

@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "Kabel zasilający",
+  "item.drivebypower.wire_cutter": "Przecinak do kabli zasilających",
+  "subtitle.drivebypower.plug.in": "Kabel podłączony",
+  "subtitle.drivebypower.plug.out": "Kabel odłączony",
+  "drivebypower.configuration.title": "Konfiguracja Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Konfiguracja Drive By Power",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Konfiguracja Drive By Power",
+  "drivebypower.configuration.maxFePerTick": "Maks. FE na tick"
+}

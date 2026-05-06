@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower;
+package edn.argolde.drivebypower;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 

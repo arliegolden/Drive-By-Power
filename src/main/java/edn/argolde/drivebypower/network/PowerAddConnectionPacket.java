@@ -1,8 +1,8 @@
-package edn.stratodonut.drivebypower.network;
+package edn.argolde.drivebypower.network;
 
-import edn.stratodonut.drivebypower.DriveByPowerMod;
-import edn.stratodonut.drivebypower.PowerSounds;
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.DriveByPowerMod;
+import edn.argolde.drivebypower.PowerSounds;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

@@ -1,15 +1,17 @@
-package edn.stratodonut.drivebypower.client;
+package edn.argolde.drivebypower.client;
 
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint.Mode;
-import edn.stratodonut.drivebypower.DriveByPowerMod;
-import edn.stratodonut.drivebypower.PowerItems;
-import edn.stratodonut.drivebypower.network.PowerAddConnectionPacket;
-import edn.stratodonut.drivebypower.network.PowerNetworkRequestSyncPacket;
-import edn.stratodonut.drivebypower.network.PowerRemoveConnectionPacket;
-import edn.stratodonut.drivebypower.util.BlockFace;
-import edn.stratodonut.drivebypower.util.FaceOutlines;
-import edn.stratodonut.drivebypower.wire.PowerNetworkManager;
-import edn.stratodonut.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
+
+import edn.argolde.drivebypower.DriveByPowerMod;
+import edn.argolde.drivebypower.PowerItems;
+import edn.argolde.drivebypower.network.PowerAddConnectionPacket;
+import edn.argolde.drivebypower.network.PowerNetworkRequestSyncPacket;
+import edn.argolde.drivebypower.network.PowerRemoveConnectionPacket;
+import edn.argolde.drivebypower.util.BlockFace;
+import edn.argolde.drivebypower.util.FaceOutlines;
+import edn.argolde.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
+
 import java.util.Map;
 import java.util.Set;
 import net.createmod.catnip.outliner.Outliner;

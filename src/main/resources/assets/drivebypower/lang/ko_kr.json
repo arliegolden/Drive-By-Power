@@ -1,0 +1,11 @@
+{
+  "itemGroup.drivebypower": "Drive By Power",
+  "item.drivebypower.wire": "전력 케이블",
+  "item.drivebypower.wire_cutter": "전력 케이블 절단기",
+  "subtitle.drivebypower.plug.in": "케이블 연결됨",
+  "subtitle.drivebypower.plug.out": "케이블 연결 해제됨",
+  "drivebypower.configuration.title": "Drive By Power 설정",
+  "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power 설정",
+  "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power 설정",
+  "drivebypower.configuration.maxFePerTick": "틱당 최대 FE"
+}

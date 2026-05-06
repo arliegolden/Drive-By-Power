@@ -1,4 +1,4 @@
-package edn.stratodonut.drivebypower.util;
+package edn.argolde.drivebypower.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,11 +1,12 @@
-package edn.stratodonut.drivebypower.wire;
+package edn.argolde.drivebypower.wire;
 
 import dev.ryanhcode.sable.Sable;
 import dev.ryanhcode.sable.api.schematic.SubLevelSchematicSerializationContext;
 import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.sublevel.SubLevel;
-import edn.stratodonut.drivebypower.DriveByPowerMod;
-import edn.stratodonut.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
+import edn.argolde.drivebypower.DriveByPowerMod;
+import edn.argolde.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
