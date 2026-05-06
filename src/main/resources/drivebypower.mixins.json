@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "edn.stratodonut.drivebypower.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "compat.MixinBlockSubLevelAssemblyListener"
+  ],
+  "client": [],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8",
+  "refmap": "drivebypower.refmap.json"
+}

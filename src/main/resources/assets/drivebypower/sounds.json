@@ -1,0 +1,14 @@
+{
+  "plug_in": {
+    "subtitle": "subtitle.drivebypower.plug.in",
+    "sounds": [
+      "minecraft:block.lever.click"
+    ]
+  },
+  "plug_out": {
+    "subtitle": "subtitle.drivebypower.plug.out",
+    "sounds": [
+      "minecraft:block.lever.click"
+    ]
+  }
+}
