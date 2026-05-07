@@ -2,6 +2,7 @@ package edn.argolde.drivebypower.client;
 
 import com.simibubi.create.content.equipment.goggles.GogglesItem;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint.Mode;
+import com.simibubi.create.foundation.utility.CreateLang;
 
 import edn.argolde.drivebypower.DriveByPowerMod;
 import edn.argolde.drivebypower.PowerItems;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.CommonComponents;
 import net.createmod.catnip.outliner.Outliner;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
@@ -113,12 +115,25 @@ public final class ClientPowerNetworkHandler {
     }
 
     public static boolean addGoggleInformation(final Level level, final BlockPos pos, final List<Component> tooltip) {
+        return addGoggleInformation(level, pos, tooltip, false);
+    }
+
+    public static boolean addGoggleInformation(
+        final Level level,
+        final BlockPos pos,
+        final List<Component> tooltip,
+        final boolean addSeparator
+    ) {
         final List<ConnectionInfo> connections = PowerNetworkManager.get(level).getConnectionsFor(pos);
         if (connections.isEmpty()) {
             return false;
         }
 
-        tooltip.add(Component.translatable("gui.drivebypower.goggles.title").withStyle(ChatFormatting.GOLD));
+        if (addSeparator && !tooltip.isEmpty()) {
+            tooltip.add(CommonComponents.EMPTY);
+        }
+
+        addGoggleLine(tooltip, Component.translatable("gui.drivebypower.goggles.title").withStyle(ChatFormatting.GOLD), 0);
         for (final ConnectionInfo connection : connections) {
             addConnectionTooltip(tooltip, connection);
             drawConnection(
@@ -139,15 +154,13 @@ public final class ClientPowerNetworkHandler {
         final BlockPos otherEndpoint = sourceEndpoint ? connection.sink() : connection.source();
         final ChatFormatting directionColor = sourceEndpoint ? ChatFormatting.GREEN : ChatFormatting.AQUA;
 
-        tooltip.add(Component.literal("  ")
-            .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.sending" : "gui.drivebypower.goggles.receiving")
-                .withStyle(directionColor))
+        addGoggleLine(tooltip, Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.sending" : "gui.drivebypower.goggles.receiving")
+            .withStyle(directionColor)
             .append(Component.literal(" "))
-            .append(formatEnergy(connection.energyPerTick())));
+            .append(formatEnergy(connection.energyPerTick())), 1);
 
-        tooltip.add(Component.literal("    ")
-            .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.to" : "gui.drivebypower.goggles.from")
-                .withStyle(ChatFormatting.GRAY))
+        addGoggleLine(tooltip, Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.to" : "gui.drivebypower.goggles.from")
+            .withStyle(ChatFormatting.GRAY)
             .append(Component.literal(" "))
             .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.sink" : "gui.drivebypower.goggles.source")
                 .withStyle(ChatFormatting.WHITE))
@@ -155,10 +168,9 @@ public final class ClientPowerNetworkHandler {
             .append(Component.translatable("gui.drivebypower.goggles.channel")
                 .withStyle(ChatFormatting.DARK_GRAY))
             .append(Component.literal(" "))
-            .append(Component.literal(connection.channel()).withStyle(ChatFormatting.DARK_AQUA)));
+            .append(Component.literal(connection.channel()).withStyle(ChatFormatting.DARK_AQUA)), 2);
 
-        tooltip.add(Component.literal("    ")
-            .append(Component.literal(formatPos(otherEndpoint)).withStyle(ChatFormatting.DARK_GRAY)));
+        addGoggleLine(tooltip, Component.literal(formatPos(otherEndpoint)).withStyle(ChatFormatting.DARK_GRAY), 2);
     }
 
     private static Component formatEnergy(final int energyPerTick) {
@@ -166,6 +178,12 @@ public final class ClientPowerNetworkHandler {
         return Component.literal(String.valueOf(energyPerTick))
             .withStyle(color)
             .append(Component.literal(" FE/t").withStyle(ChatFormatting.GRAY));
+    }
+
+    private static void addGoggleLine(final List<Component> tooltip, final Component component, final int indent) {
+        CreateLang.builder()
+            .add(component.copy())
+            .forGoggles(tooltip, indent);
     }
 
     public static void clearSource() {

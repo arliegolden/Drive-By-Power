@@ -6,7 +6,8 @@
     "compat.MixinBlockSubLevelAssemblyListener"
   ],
   "client": [
-    "client.MixinBlockEntityGoggleInformation"
+    "client.MixinBlockEntityGoggleInformation",
+    "client.MixinGoggleOverlayRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
