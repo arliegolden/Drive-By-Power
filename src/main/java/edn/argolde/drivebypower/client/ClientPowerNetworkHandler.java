@@ -1,5 +1,6 @@
 package edn.argolde.drivebypower.client;
 
+import com.simibubi.create.content.equipment.goggles.GogglesItem;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint.Mode;
 
 import edn.argolde.drivebypower.DriveByPowerMod;
@@ -10,15 +11,19 @@ import edn.argolde.drivebypower.network.PowerRemoveConnectionPacket;
 import edn.argolde.drivebypower.util.BlockFace;
 import edn.argolde.drivebypower.util.FaceOutlines;
 import edn.argolde.drivebypower.wire.PowerNetworkManager;
+import edn.argolde.drivebypower.wire.PowerNetworkManager.ConnectionInfo;
 import edn.argolde.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.minecraft.ChatFormatting;
 import net.createmod.catnip.outliner.Outliner;
 import net.createmod.catnip.theme.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -90,7 +95,10 @@ public final class ClientPowerNetworkHandler {
 
         final ItemStack mainHand = player.getMainHandItem();
         if (!mainHand.is(PowerItems.WIRE.get()) && !mainHand.is(PowerItems.WIRE_CUTTER.get())) {
-            clearSource();
+            selectedSource = null;
+            if (GogglesItem.isWearingGoggles(player) && --syncCooldown <= 0) {
+                syncManager();
+            }
             return;
         }
 
@@ -102,6 +110,62 @@ public final class ClientPowerNetworkHandler {
             drawOutline(level, selectedSource, LineColor.SOURCE.SELECTED.getColor());
         }
         drawOutlines(level, selectedSource, currentNetwork);
+    }
+
+    public static boolean addGoggleInformation(final Level level, final BlockPos pos, final List<Component> tooltip) {
+        final List<ConnectionInfo> connections = PowerNetworkManager.get(level).getConnectionsFor(pos);
+        if (connections.isEmpty()) {
+            return false;
+        }
+
+        tooltip.add(Component.translatable("gui.drivebypower.goggles.title").withStyle(ChatFormatting.GOLD));
+        for (final ConnectionInfo connection : connections) {
+            addConnectionTooltip(tooltip, connection);
+            drawConnection(
+                level,
+                connection.source(),
+                connection.sink(),
+                connection.sinkDirection(),
+                connection.sourceEndpoint() ? LineColor.SINK.SELECTED.getColor() : LineColor.SOURCE.SAME_NETWORK.getColor(),
+                animatedWireColor(connection.energyPerTick(), 0.0F),
+                connection.energyPerTick()
+            );
+        }
+        return true;
+    }
+
+    private static void addConnectionTooltip(final List<Component> tooltip, final ConnectionInfo connection) {
+        final boolean sourceEndpoint = connection.sourceEndpoint();
+        final BlockPos otherEndpoint = sourceEndpoint ? connection.sink() : connection.source();
+        final ChatFormatting directionColor = sourceEndpoint ? ChatFormatting.GREEN : ChatFormatting.AQUA;
+
+        tooltip.add(Component.literal("  ")
+            .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.sending" : "gui.drivebypower.goggles.receiving")
+                .withStyle(directionColor))
+            .append(Component.literal(" "))
+            .append(formatEnergy(connection.energyPerTick())));
+
+        tooltip.add(Component.literal("    ")
+            .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.to" : "gui.drivebypower.goggles.from")
+                .withStyle(ChatFormatting.GRAY))
+            .append(Component.literal(" "))
+            .append(Component.translatable(sourceEndpoint ? "gui.drivebypower.goggles.sink" : "gui.drivebypower.goggles.source")
+                .withStyle(ChatFormatting.WHITE))
+            .append(Component.literal("  "))
+            .append(Component.translatable("gui.drivebypower.goggles.channel")
+                .withStyle(ChatFormatting.DARK_GRAY))
+            .append(Component.literal(" "))
+            .append(Component.literal(connection.channel()).withStyle(ChatFormatting.DARK_AQUA)));
+
+        tooltip.add(Component.literal("    ")
+            .append(Component.literal(formatPos(otherEndpoint)).withStyle(ChatFormatting.DARK_GRAY)));
+    }
+
+    private static Component formatEnergy(final int energyPerTick) {
+        final ChatFormatting color = energyPerTick > 0 ? ChatFormatting.AQUA : ChatFormatting.DARK_GRAY;
+        return Component.literal(String.valueOf(energyPerTick))
+            .withStyle(color)
+            .append(Component.literal(" FE/t").withStyle(ChatFormatting.GRAY));
     }
 
     public static void clearSource() {
@@ -150,11 +214,13 @@ public final class ClientPowerNetworkHandler {
                 for (final Set<PowerNetworkSink> sinks : perChannel.values()) {
                     for (final PowerNetworkSink sink : sinks) {
                         drawConnection(
+                            level,
                             source,
                             BlockPos.of(sink.position()),
                             Direction.from3DDataValue(sink.direction()),
                             LineColor.SINK.SELECTED.getColor(),
-                            LineColor.WIRE.SELECTED.getColor()
+                            LineColor.WIRE.SELECTED.getColor(),
+                            0
                         );
                     }
                 }
@@ -165,13 +231,16 @@ public final class ClientPowerNetworkHandler {
     }
 
     private static void drawConnection(
+        final Level level,
         final BlockPos start,
         final BlockPos end,
         final Direction direction,
         final int faceColor,
-        final int wireColor
+        final int wireColor,
+        final int energyPerTick
     ) {
         drawOutlineFace(end, direction, faceColor);
+
         Outliner.getInstance()
             .showLine(
                 net.createmod.catnip.data.Pair.of("powerConnection", net.createmod.catnip.data.Pair.of(end, direction)),
@@ -195,6 +264,22 @@ public final class ClientPowerNetworkHandler {
             .showAABB(net.createmod.catnip.data.Pair.of("powerBlock", pos), box.move(pos))
             .colored(color)
             .lineWidth(0.0625F);
+    }
+
+    private static String formatPos(final BlockPos pos) {
+        return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
+    }
+
+    public static int animatedWireColor(final int energyPerTick, final float partialTick) {
+        if (energyPerTick <= 0) {
+            return 0x703030;
+        }
+
+        final float pulse = (float) ((Math.sin((Minecraft.getInstance().level.getGameTime() + partialTick) * 0.45D) + 1.0D) * 0.5D);
+        final int red = 180 + Math.round(75 * pulse);
+        final int green = 35 + Math.round(45 * pulse);
+        final int blue = 25 + Math.round(25 * pulse);
+        return (red << 16) | (green << 8) | blue;
     }
 
     private interface LineColor {

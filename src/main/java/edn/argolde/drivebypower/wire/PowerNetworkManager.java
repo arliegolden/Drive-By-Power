@@ -7,11 +7,14 @@ import dev.ryanhcode.sable.sublevel.SubLevel;
 import edn.argolde.drivebypower.DriveByPowerMod;
 import edn.argolde.drivebypower.wire.graph.PowerNetworkNode.PowerNetworkSink;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import net.minecraft.core.BlockPos;
@@ -34,6 +37,8 @@ public final class PowerNetworkManager {
     private static final String DIRECTION_KEY = "Direction";
     private static final String CHANNEL_KEY = "Channel";
     private static final String FACING_KEY = "Facing";
+    private static final String FLOWS_KEY = "Flows";
+    private static final String ENERGY_KEY = "Energy";
     private static final String UNSUPPORTED_CONNECTIONS_KEY = "UnsupportedConnections";
     private static final String SNAPSHOT_VERSION_KEY = "SnapshotVersion";
     private static final String OWNER_SUB_LEVEL_KEY = "OwnerSubLevel";
@@ -46,6 +51,7 @@ public final class PowerNetworkManager {
 
     private final Map<Long, Map<String, Set<PowerNetworkSink>>> sinks = new HashMap<>();
     private final Map<Long, Set<SinkReference>> sinkReferences = new HashMap<>();
+    private final Map<ConnectionKey, Integer> flows = new HashMap<>();
     private final Runnable dirtyMarker;
     private boolean graphDirty;
 
@@ -178,6 +184,7 @@ public final class PowerNetworkManager {
         }
 
         removeSinkReference(sourceKey, channel, sink);
+        flows.remove(ConnectionKey.of(source, channel, sinkPos, sinkDirection));
 
         if (sinksOnChannel.isEmpty()) {
             perChannel.remove(channel);
@@ -199,6 +206,7 @@ public final class PowerNetworkManager {
 
         perChannel.forEach((channel, sinksOnChannel) -> sinksOnChannel.forEach(sink -> {
             removeSinkReference(sourceKey, channel, sink);
+            flows.remove(new ConnectionKey(sourceKey, channel, sink.position(), sink.direction()));
         }));
         dirtyMarker.run();
         return true;
@@ -224,6 +232,57 @@ public final class PowerNetworkManager {
                 Direction.from3DDataValue(sink.direction())
             ));
         }));
+    }
+
+    public List<ConnectionInfo> getConnectionsFor(final BlockPos pos) {
+        final long posKey = pos.asLong();
+        final List<ConnectionInfo> connections = new ArrayList<>();
+
+        final Map<String, Set<PowerNetworkSink>> sourceConnections = sinks.get(posKey);
+        if (sourceConnections != null) {
+            sourceConnections.forEach((channel, sinksOnChannel) -> sinksOnChannel.forEach(sink -> {
+                final BlockPos sinkPos = BlockPos.of(sink.position());
+                final Direction direction = Direction.from3DDataValue(sink.direction());
+                connections.add(new ConnectionInfo(pos, channel, sinkPos, direction, true, getFlow(pos, channel, sinkPos, direction)));
+            }));
+        }
+
+        final Set<SinkReference> references = sinkReferences.get(posKey);
+        if (references != null) {
+            references.forEach(reference -> {
+                final BlockPos sourcePos = BlockPos.of(reference.sourcePos());
+                final Direction direction = Direction.from3DDataValue(reference.direction());
+                connections.add(new ConnectionInfo(sourcePos, reference.channel(), pos, direction, false, getFlow(sourcePos, reference.channel(), pos, direction)));
+            });
+        }
+
+        connections.sort(Comparator
+            .comparing((ConnectionInfo connection) -> connection.channel())
+            .thenComparing(connection -> connection.source().asLong())
+            .thenComparing(connection -> connection.sink().asLong())
+            .thenComparing(connection -> connection.sinkDirection().get3DDataValue())
+        );
+        return List.copyOf(connections);
+    }
+
+    public void setFlow(
+        final BlockPos source,
+        final String channel,
+        final BlockPos sink,
+        final Direction sinkDirection,
+        final int energy
+    ) {
+        final ConnectionKey key = ConnectionKey.of(source, channel, sink, sinkDirection);
+        if (energy <= 0) {
+            flows.remove(key);
+            return;
+        }
+
+        flows.put(key, energy);
+    }
+
+    public int getFlow(final BlockPos source, final String channel, final BlockPos sink, final Direction sinkDirection) {
+        return flows.getOrDefault(ConnectionKey.of(source, channel, sink, sinkDirection), 0);
     }
 
     public BackupSnapshot createBackupSnapshot(final Level level, final BlockPos backupPos, final Direction savedFacing) {
@@ -562,9 +621,27 @@ public final class PowerNetworkManager {
         return tag;
     }
 
+    public CompoundTag saveClientSnapshot(final CompoundTag tag) {
+        save(tag);
+
+        final ListTag flowTags = new ListTag();
+        flows.forEach((connection, energy) -> {
+            final CompoundTag flow = new CompoundTag();
+            flow.putLong(SOURCE_KEY, connection.source());
+            flow.putLong(SINK_KEY, connection.sink());
+            flow.putByte(DIRECTION_KEY, (byte) connection.direction());
+            flow.putString(CHANNEL_KEY, connection.channel());
+            flow.putInt(ENERGY_KEY, energy);
+            flowTags.add(flow);
+        });
+        tag.put(FLOWS_KEY, flowTags);
+        return tag;
+    }
+
     public void load(final CompoundTag tag) {
         sinks.clear();
         sinkReferences.clear();
+        flows.clear();
         graphDirty = false;
 
         if (!tag.contains(CONNECTIONS_KEY, Tag.TAG_LIST)) {
@@ -592,6 +669,32 @@ public final class PowerNetworkManager {
             getOrCreateSinksOnChannel(BlockPos.of(sourceKey), channel).add(sink);
             addSinkReference(sourceKey, channel, sink);
         }
+
+        if (!tag.contains(FLOWS_KEY, Tag.TAG_LIST)) {
+            return;
+        }
+
+        final ListTag flowTags = tag.getList(FLOWS_KEY, Tag.TAG_COMPOUND);
+        for (final Tag entry : flowTags) {
+            if (!(entry instanceof final CompoundTag flow)
+                || !flow.contains(SOURCE_KEY, Tag.TAG_LONG)
+                || !flow.contains(SINK_KEY, Tag.TAG_LONG)
+                || !flow.contains(DIRECTION_KEY, Tag.TAG_BYTE)
+                || !flow.contains(CHANNEL_KEY, Tag.TAG_STRING)
+                || !flow.contains(ENERGY_KEY, Tag.TAG_INT)) {
+                continue;
+            }
+
+            flows.put(
+                new ConnectionKey(
+                    flow.getLong(SOURCE_KEY),
+                    flow.getString(CHANNEL_KEY),
+                    flow.getLong(SINK_KEY),
+                    flow.getByte(DIRECTION_KEY)
+                ),
+                flow.getInt(ENERGY_KEY)
+            );
+        }
     }
 
     private void remapMovedBlockInternal(final BlockPos oldPos, final BlockPos newPos) {
@@ -614,6 +717,10 @@ public final class PowerNetworkManager {
             movedSourceConnections.forEach((channel, movedSinksOnChannel) -> {
                 targetPerChannel.computeIfAbsent(channel, ignored -> new HashSet<>()).addAll(movedSinksOnChannel);
                 movedSinksOnChannel.forEach(sink -> {
+                    final Integer flow = flows.remove(new ConnectionKey(oldKey, channel, sink.position(), sink.direction()));
+                    if (flow != null) {
+                        flows.put(new ConnectionKey(newKey, channel, sink.position(), sink.direction()), flow);
+                    }
                     removeSinkReference(oldKey, channel, sink);
                     addSinkReference(newKey, channel, sink);
                 });
@@ -635,6 +742,10 @@ public final class PowerNetworkManager {
 
                 if (sinksOnChannel.remove(new PowerNetworkSink(oldKey, reference.direction()))) {
                     sinksOnChannel.add(new PowerNetworkSink(newKey, reference.direction()));
+                    final Integer flow = flows.remove(new ConnectionKey(reference.sourcePos(), reference.channel(), oldKey, reference.direction()));
+                    if (flow != null) {
+                        flows.put(new ConnectionKey(reference.sourcePos(), reference.channel(), newKey, reference.direction()), flow);
+                    }
                     addSinkReference(newKey, reference.sourcePos(), reference.channel(), reference.direction());
                     changed = true;
                 }
@@ -738,6 +849,27 @@ public final class PowerNetworkManager {
     }
 
     private record SinkReference(long sourcePos, String channel, int direction) {
+    }
+
+    private record ConnectionKey(long source, String channel, long sink, int direction) {
+        private static ConnectionKey of(
+            final BlockPos source,
+            final String channel,
+            final BlockPos sink,
+            final Direction direction
+        ) {
+            return new ConnectionKey(source.asLong(), channel, sink.asLong(), direction.get3DDataValue());
+        }
+    }
+
+    public record ConnectionInfo(
+        BlockPos source,
+        String channel,
+        BlockPos sink,
+        Direction sinkDirection,
+        boolean sourceEndpoint,
+        int energyPerTick
+    ) {
     }
 
     @FunctionalInterface

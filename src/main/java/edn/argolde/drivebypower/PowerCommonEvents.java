@@ -21,10 +21,13 @@ public final class PowerCommonEvents {
 
         final PowerNetworkManager manager = PowerNetworkManager.get(serverLevel);
         manager.flushPendingGraphRebuild(serverLevel);
-        manager.forEachConnection((source, channel, sink, sinkDirection) -> transferEnergy(serverLevel, source, sink, sinkDirection));
+        manager.forEachConnection((source, channel, sink, sinkDirection) -> {
+            final int transferred = transferEnergy(serverLevel, source, sink, sinkDirection);
+            manager.setFlow(source, channel, sink, sinkDirection, transferred);
+        });
     }
 
-    private static void transferEnergy(
+    private static int transferEnergy(
         final ServerLevel level,
         final BlockPos sourcePos,
         final BlockPos sinkPos,
@@ -32,23 +35,23 @@ public final class PowerCommonEvents {
     ) {
         final IEnergyStorage sink = level.getCapability(Capabilities.EnergyStorage.BLOCK, sinkPos, sinkDirection);
         if (sink == null || !sink.canReceive()) {
-            return;
+            return 0;
         }
 
         final int maxTransfer = PowerConfig.MAX_FE_PER_TICK.getAsInt();
         final int receivable = sink.receiveEnergy(maxTransfer, true);
         if (receivable <= 0) {
-            return;
+            return 0;
         }
 
         final Extraction extraction = extractFromSource(level, sourcePos, receivable, true);
         if (extraction.energy() <= 0) {
-            return;
+            return 0;
         }
 
         final int extracted = getEnergy(level, sourcePos, extraction.side()).extractEnergy(extraction.energy(), false);
         if (extracted <= 0) {
-            return;
+            return 0;
         }
 
         final int accepted = sink.receiveEnergy(extracted, false);
@@ -56,6 +59,7 @@ public final class PowerCommonEvents {
             final IEnergyStorage source = getEnergy(level, sourcePos, extraction.side());
             source.receiveEnergy(extracted - accepted, false);
         }
+        return accepted;
     }
 
     private static Extraction extractFromSource(final ServerLevel level, final BlockPos sourcePos, final int amount, final boolean simulate) {

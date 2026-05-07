@@ -7,5 +7,13 @@
   "drivebypower.configuration.title": "Drive By Power Config",
   "drivebypower.configuration.section.drivebypower.common.toml": "Drive By Power Config",
   "drivebypower.configuration.section.drivebypower.common.toml.title": "Drive By Power Config",
-  "drivebypower.configuration.maxFePerTick": "Max FE per Tick"
+  "drivebypower.configuration.maxFePerTick": "Max FE per Tick",
+  "gui.drivebypower.goggles.title": "Drive By Power Network",
+  "gui.drivebypower.goggles.sending": "Sending",
+  "gui.drivebypower.goggles.receiving": "Receiving",
+  "gui.drivebypower.goggles.to": "to",
+  "gui.drivebypower.goggles.from": "from",
+  "gui.drivebypower.goggles.source": "source",
+  "gui.drivebypower.goggles.sink": "sink",
+  "gui.drivebypower.goggles.channel": "channel"
 }

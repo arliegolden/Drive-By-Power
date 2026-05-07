@@ -24,7 +24,7 @@ public record PowerNetworkFullSyncPacket(CompoundTag network) implements CustomP
     }
 
     public static void sendTo(final ServerPlayer player) {
-        final CompoundTag tag = PowerNetworkManager.get(player.serverLevel()).save(new CompoundTag());
+        final CompoundTag tag = PowerNetworkManager.get(player.serverLevel()).saveClientSnapshot(new CompoundTag());
         PacketDistributor.sendToPlayer(player, new PowerNetworkFullSyncPacket(tag));
     }
 
